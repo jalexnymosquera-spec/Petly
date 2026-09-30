@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petly - Catálogo La Yunta</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f4f6f8; padding: 16px; max-width: 600px; margin: auto; }
+    header { text-align: center; margin-bottom: 20px; }
+    header h1 { color: #1a56db; font-size: 1.6rem; }
+    header p { color: #6b7280; font-size: 0.9rem; }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
+    .info h3 { font-size: 1.05rem; color: #1f2937; margin-bottom: 4px; }
+    .categoria { display: inline-block; background: #e0e7ff; color: #3730a3; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: 600; margin-bottom: 6px; }
+    .precio { font-weight: bold; color: #059669; font-size: 1.1rem; }
+    .stock { font-size: 0.8rem; color: #4b5563; }
+    .btn-descontar { background-color: #2563eb; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-descontar:active { transform: scale(0.96); background-color: #1d4ed8; }
+    .alerta { background-color: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem; display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🐾 Petly - Tienda La Yunta</h1>
+    <p>Catálogo y Mostrador Rápido (1-Toque)</p>
+  </header>
+
+  <div id="mensajeAlerta" class="alerta"></div>
+  <div id="contenedorProductos">Cargando productos...</div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api/productos';
+
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(API_URL);
+        const productos = await respuesta.json();
+        const contenedor = document.getElementById('contenedorProductos');
+        contenedor.innerHTML = '';
+
+        productos.forEach(prod => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <div class="info">
+              <span class="categoria">${prod.categoria}</span>
+              <h3>${prod.nombre}</h3>
+              <p class="precio">$${prod.precio.toLocaleString('es-CO')}</p>
+              <p class="stock">Disponibles: <strong id="stock-${prod.id}">${prod.stock}</strong></p>
+            </div>
+            <button class="btn-descontar" onclick="venderUnToque(${prod.id})">⚡ Vender 1</button>
+          `;
+          contenedor.appendChild(card);
+        });
+      } catch (error) {
+        document.getElementById('contenedorProductos').innerHTML = 'Error al conectar con el servidor.';
+      }
+    }
+
+    async function venderUnToque(id) {
+      try {
+        const res = await fetch(`${API_URL}/${id}/descontar`, { method: 'PATCH' });
+        const data = await res.json();
+        
+        if (res.ok) {
+          const alerta = document.getElementById('mensajeAlerta');
+          alerta.innerText = data.mensaje;
+          alerta.style.display = 'block';
+          setTimeout(() => { alerta.style.display = 'none'; }, 2500);
+          cargarProductos(); // Refresca las existencias en vivo
+        } else {
+          alert(data.error);
+        }
+      } catch (err) {
+        alert('Error al registrar la venta');
+      }
+    }
+
+    cargarProductos();
+  </script>
+</body>
+</html>

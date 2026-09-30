@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - Sistema Petly (La Yunta)</title>
+  <style>
+    /* Estética Wireframe: Escala de grises, bordes definidos y aspecto de boceto técnico */
+    :root {
+      --wf-bg: #f8f9fa;
+      --wf-card: #ffffff;
+      --wf-border: #94a3b8;
+      --wf-border-dark: #475569;
+      --wf-text: #1e293b;
+      --wf-text-muted: #64748b;
+      --wf-placeholder: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: #cbd5e1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+
+    /* Barra de control para alternar vistas */
+    .toolbar {
+      background: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .toolbar span { font-weight: bold; font-size: 0.9rem; color: var(--wf-text); }
+    .toolbar button {
+      padding: 8px 16px;
+      border: 2px solid var(--wf-border-dark);
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .toolbar button.active {
+      background: var(--wf-border-dark);
+      color: white;
+    }
+
+    /* Contenedor del Wireframe */
+    .viewport {
+      background: var(--wf-bg);
+      border: 3px solid var(--wf-border-dark);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: width 0.3s ease;
+      min-height: 700px;
+    }
+
+    /* Estado: Vista Móvil */
+    .view-mobile {
+      width: 380px;
+    }
+
+    /* Estado: Vista Escritorio / Mostrador */
+    .view-desktop {
+      width: 950px;
+    }
+
+    /* Componentes del Wireframe */
+    .wf-header {
+      background: white;
+      border-bottom: 2px solid var(--wf-border);
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wf-logo {
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      border: 2px dashed var(--wf-border-dark);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .wf-search {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--wf-border);
+      border-radius: 6px;
+      background: white;
+      margin: 12px 0;
+      color: var(--wf-text-muted);
+      font-size: 0.85rem;
+    }
+    .wf-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+    }
+    .wf-tag {
+      border: 1px solid var(--wf-border-dark);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      background: white;
+      white-space: nowrap;
+    }
+    .wf-tag.active {
+      background: var(--wf-placeholder);
+      font-weight: bold;
+    }
+
+    .wf-card {
+      background: white;
+      border: 2px solid var(--wf-border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+    }
+    .wf-img-box {
+      width: 65px;
+      height: 65px;
+      background: var(--wf-placeholder);
+      border: 1px dashed var(--wf-border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--wf-text-muted);
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+    .wf-details { flex-grow: 1; }
+    .wf-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .wf-price { font-weight: 800; font-size: 1rem; color: var(--wf-text); }
+    .wf-stock { font-size: 0.75rem; color: var(--wf-text-muted); margin-bottom: 6px; }
+
+    .wf-btn {
+      width: 100%;
+      padding: 8px;
+      border: 2px solid var(--wf-border-dark);
+      background: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .wf-btn-primary {
+      background: var(--wf-placeholder);
+    }
+    .wf-btn-quick {
+      background: #f1f5f9;
+      border: 2px solid #0f172a;
+      font-weight: 800;
+    }
+
+    /* Footer flotante para WhatsApp (Mobile) */
+    .wf-float-cta {
+      background: white;
+      border-top: 2px solid var(--wf-border-dark);
+      padding: 12px;
+      position: sticky;
+      bottom: 0;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Estructura Desktop Mostrador */
+    .desktop-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 15px;
+      padding: 15px;
+    }
+    .panel-box {
+      background: white;
+      border: 2px solid var(--wf-border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .alert-banner {
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      color: #991b1b;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Selector para alternar la vista -->
+  <div class="toolbar">
+    <span>Prototipo Wireframe:</span>
+    <button id="btnMobile" class="active" onclick="switchView('mobile')">📱 Vista Cliente (Móvil)</button>
+    <button id="btnDesktop" onclick="switchView('desktop')">💻 Vista Auxiliar (Mostrador)</button>
+  </div>
+
+  <!-- Contenedor del dispositivo -->
+  <div id="viewport" class="viewport view-mobile">
+
+    <!-- ==================== VISTA 1: MÓVIL (CLIENTE) ==================== -->
+    <div id="viewMobileContent">
+      <div class="wf-header">
+        <div class="wf-logo">🐾 PETLY | La Yunta</div>
+        <div style="border: 1px solid var(--wf-border-dark); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">🛒 Carrito (2)</div>
+      </div>
+
+      <div style="padding: 14px;">
+        <input type="text" class="wf-search" value="🔍 [ Wireframe ] Buscar concentrado, medicinas..." readonly>
+
+        <div class="wf-tags">
+          <span class="wf-tag active">Todos</span>
+          <span class="wf-tag">Alimentos</span>
+          <span class="wf-tag">Farmacia</span>
+          <span class="wf-tag">Aseo y Accesorios</span>
+        </div>
+
+        <!-- Producto 1 -->
+        <div class="wf-card">
+          <div class="wf-img-box">[ Imagen ]</div>
+          <div class="wf-details">
+            <div class="wf-title">Concentrado Chunky Adultos 25kg</div>
+            <div class="wf-price">$185.000</div>
+            <div class="wf-stock">Stock actual: 9 bultos</div>
+            <button class="wf-btn wf-btn-primary">+ Añadir a la orden</button>
+          </div>
+        </div>
+
+        <!-- Producto 2 -->
+        <div class="wf-card">
+          <div class="wf-img-box">[ Imagen ]</div>
+          <div class="wf-details">
+            <div class="wf-title">Antipulgas NexGard 10-25kg</div>
+            <div class="wf-price">$62.000</div>
+            <div class="wf-stock">Stock actual: 4 pastillas</div>
+            <button class="wf-btn wf-btn-primary">+ Añadir a la orden</button>
+          </div>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="wf-card">
+          <div class="wf-img-box">[ Imagen ]</div>
+          <div class="wf-details">
+            <div class="wf-title">Shampoo Hipoalergénico 500ml</div>
+            <div class="wf-price">$28.000</div>
+            <div class="wf-stock">Stock actual: 7 frascos</div>
+            <button class="wf-btn wf-btn-primary">+ Añadir a la orden</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Flotante WhatsApp -->
+      <div class="wf-float-cta">
+        <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between;">
+          <span>Subtotal estimado:</span>
+          <span>$247.000</span>
+        </div>
+        <button class="wf-btn" style="background: #25D366; color: white; border: none; font-size: 0.9rem;">
+          💬 Enviar Pedido a WhatsApp (Generar Mensaje)
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== VISTA 2: DESKTOP (MOSTRADOR / CAJERO) ==================== -->
+    <div id="viewDesktopContent" style="display: none;">
+      <div class="wf-header">
+        <div class="wf-logo">🐾 PETLY MOSTRADOR - Terminal de Caja Rápida</div>
+        <div style="font-size: 0.85rem; color: var(--wf-text-muted);">Usuario activo: Auxiliar de Tienda | Estado: Online</div>
+      </div>
+
+      <div class="desktop-layout">
+        <!-- Columna Izquierda: Botones de venta ágil de un toque -->
+        <div class="panel-box">
+          <h3 style="margin-bottom: 10px; font-size: 1rem;">Mostrador: Registro de Salida Inmediata (1-Toque)</h3>
+          <div class="alert-banner">⚠️️ Alerta Elicitación: Interfaz táctil simplificada para operar sin teclado ni formularios largos.</div>
+
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--wf-border-dark);">
+                <th style="padding: 8px;">Producto</th>
+                <th style="padding: 8px;">Precio</th>
+                <th style="padding: 8px;">Stock</th>
+                <th style="padding: 8px; text-align: center;">Acción Inmediata</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--wf-border);">
+                <td style="padding: 10px 8px; font-weight: bold;">Chunky Adultos 25kg</td>
+                <td>$185.000</td>
+                <td><span style="border: 1px solid black; padding: 2px 6px; border-radius: 4px;">9</span></td>
+                <td style="text-align: center;"><button class="wf-btn wf-btn-quick" style="width: auto; padding: 6px 14px;">⚡ VENDER 1</button></td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--wf-border);">
+                <td style="padding: 10px 8px; font-weight: bold;">Antipulgas NexGard 10-25kg</td>
+                <td>$62.000</td>
+                <td><span style="border: 1px solid black; padding: 2px 6px; border-radius: 4px;">4</span></td>
+                <td style="text-align: center;"><button class="wf-btn wf-btn-quick" style="width: auto; padding: 6px 14px;">⚡ VENDER 1</button></td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--wf-border);">
+                <td style="padding: 10px 8px; font-weight: bold;">Shampoo Hipoalergénico 500ml</td>
+                <td>$28.000</td>
+                <td><span style="border: 1px solid black; padding: 2px 6px; border-radius: 4px;">7</span></td>
+                <td style="text-align: center;"><button class="wf-btn wf-btn-quick" style="width: auto; padding: 6px 14px;">⚡ VENDER 1</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Columna Derecha: Alertas de Stock y Resumen del Turno -->
+        <div class="panel-box" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="margin-bottom: 10px; font-size: 1rem;">Estado del Inventario</h3>
+            <div style="border: 1px dashed var(--wf-border-dark); padding: 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 10px;">
+              📦 <strong>Alerta de reposición:</strong> NexGard tiene menos de 5 unidades.
+            </div>
+            <div style="border: 1px dashed var(--wf-border-dark); padding: 10px; border-radius: 6px; font-size: 0.8rem;">
+              🔊 <strong>Alerta sonora activa:</strong> Notificación audible configurada para nuevos pedidos por WhatsApp.
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="wf-btn" style="margin-bottom: 8px;">🔄 Sincronizar Stock Web</button>
+            <button class="wf-btn wf-btn-primary">📋 Cerrar Turno / Cuadre Diario</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchView(mode) {
+      const viewport = document.getElementById('viewport');
+      const mobileContent = document.getElementById('viewMobileContent');
+      const desktopContent = document.getElementById('viewDesktopContent');
+      const btnMobile = document.getElementById('btnMobile');
+      const btnDesktop = document.getElementById('btnDesktop');
+
+      if (mode === 'mobile') {
+        viewport.className = 'viewport view-mobile';
+        mobileContent.style.display = 'block';
+        desktopContent.style.display = 'none';
+        btnMobile.className = 'active';
+        btnDesktop.className = '';
+      } else {
+        viewport.className = 'viewport view-desktop';
+        mobileContent.style.display = 'none';
+        desktopContent.style.display = 'block';
+        btnMobile.className = '';
+        btnDesktop.className = 'active';
+      }
+    }
+  </script>
+</body>
+</html>
